@@ -1,4 +1,4 @@
-import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
 import { useState } from "react";
 import './App.css';
 import initializeAuthentication from './Firebase/firebase.init';
@@ -76,10 +76,22 @@ function App() {
       const user = result.user
       console.log(user)
       setError('');
+      verifyEmail();
     })
     .catch(error =>{
       setError(error.message);
     })
+  }
+
+  const verifyEmail = () =>{
+    sendEmailVerification(auth.currentUser)
+    .then(result =>{
+      console.log(result)
+    })
+  }
+  const handleResetPassword = ()=>{
+    sendPasswordResetEmail(auth, email)
+      .then(result=>{ })
   }
   return (
     <div className="mx-5">
@@ -111,6 +123,7 @@ function App() {
         <button type="submit" className="btn btn-primary">
           { isLogin ? 'Login': 'register'}
           </button>
+          <button type="button" onClick={handleResetPassword} className="btn btn-secondary btn-sm">Reset Button</button>
       </form>
       <br /><br /><br />
       <div>-----------------------------</div>
